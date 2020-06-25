@@ -1,3 +1,36 @@
 body {
+    font-family: Arial;
     margin: 0;
+}
+
+em {
+    background: #222;
+    color: #DDD;
+    font-style: normal;
+    border-radius: 8px;
+    padding: 2px 4px;
+}
+
+.container {
+    width: 1024px;
+    margin: 0 auto;
+}
+
+.reel-config {
+    display: inline-block;
+}
+
+.reel-row {
+    width: 141px;
+    height: 363px;
+    display: inline-block;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+
+.select > div {
+    display: none;
+}
+.select.open > div {
+    display: inline-block;
 }
