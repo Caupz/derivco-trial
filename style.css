@@ -1,6 +1,8 @@
 body {
     font-family: Arial;
     margin: 0;
+    background-color: #222222;
+    color: #FFF;
 }
 
 em {
@@ -9,6 +11,10 @@ em {
     font-style: normal;
     border-radius: 8px;
     padding: 2px 4px;
+}
+
+.thumbnail {
+    width: 24px;
 }
 
 .container {
@@ -20,12 +26,48 @@ em {
     display: inline-block;
 }
 
+.reel-row-shadow {
+    z-index: 1;
+    width: 440px;
+    height: 390px;
+    position: absolute;
+    box-shadow: inset 0px 0px 33px 10px #222;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: -3px;
+}
+
+.reel-cover-top {
+    position: absolute;
+    top: -25px;
+    background: #222;
+    width: 440px;
+    height: 30px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.reel-cover-bottom {
+    position: absolute;
+    top: 382px;
+    background: #222;
+    width: 440px;
+    height: 130px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
 .reel-row {
     width: 141px;
-    height: 363px;
+    height: 380px;
     display: inline-block;
     border: 2px solid black;
     border-radius: 8px;
+    background: #DDD;
+    position: relative;
 }
 
 .select > div {
@@ -33,4 +75,38 @@ em {
 }
 .select.open > div {
     display: inline-block;
+}
+
+#reel {
+    text-align: center;
+    background: #222;
+    padding: 0 0 140px;
+    position: relative;
+}
+
+.paytable-container, .debug-area {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 20px;
+}
+
+.reel-item, .top-reel-line, .bottom-reel-line {
+    position: absolute;
+}
+
+.reel-line {
+    width: 440px;
+    background: #222;
+    height: 2px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.top-reel-line {
+    top: 130px;
+}
+
+.bottom-reel-line {
+    top: 260px;
 }
