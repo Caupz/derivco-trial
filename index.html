@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./main.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="balance-container">
+            <input type="text" id="balance" value=5000 />
+        </div>
+        <div class="slot-machine-container">
+            <div id="reel">
+                <div class="reel-row"></div>
+                <div class="reel-row"></div>
+                <div class="reel-row"></div>
+            </div>>
+            <input type="button" id="spin-btn" value="SPIN" />
+        </div>
+        <div class="paytable-container">
+            <div id="3-cherry-top-line">3 CHERRY symbols on top line <em>2000</em></div>
+            <div id="3-cherry-center-line">3 CHERRY symbols on center line <em>1000</em></div>
+            <div id="3-cherry-bottom-line">3 CHERRY symbols on bottom line <em>4000</em></div>
+            <div id="3-symbols-any-line">3 7 symbols on any line <em>150</em></div>
+            <div id="any-combination-of-cherry-or-seven">Any combination of CHERRY and 7 on any line <em>75</em></div>
+            <div id="3-3xbar">3 3xBAR symbols on any line <em>50</em></div>
+            <div id="3-2xbar">3 2xBAR symbols on any line <em>20</em></div>
+            <div id="3-bar">3 BAR symbols on any line <em>10</em></div>
+            <div id="any-bar">Combination of any BAR symbols on any line <em>5</em></div>
+        </div>
+        <div class="debug-area">
+            <div class="modes">
+                <p>Modes:</p>
+                <input type="radio" id="random" name="mode" value="1">
+                <label for="random">Random</label><br>
+                <input type="radio" id="fixed" name="mode" value="0">
+                <label for="fixed">Fixed</label><br>
+            </div>
+
+            <div class="fixed-mode-config-container">
+                <p>Symbol of reel 1</p>
+
+                <select id="symbol-reel-1">
+                    <option value="1"><img src="./images/BAR.png" alt="BAR" /></option>
+                    <option value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></option>
+                    <option value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></option>
+                    <option value="4"><img src="./images/7.png" alt="7" /></option>
+                    <option value="5"><img src="./images/Cherry.png" alt="Cherry" /></option>
+                </select>
+
+                <p>Position of reel 1</p>
+                <select id="symbol-reel-position-1">
+                    <option value="top">Top</option>
+                    <option value="center">Center</option>
+                    <option value="bottom">Bottom</option>
+                </select>
+
+                
+                <p>Symbol of reel 2</p>
+
+                <select id="symbol-reel-2">
+                    <option value="1"><img src="./images/BAR.png" alt="BAR" /></option>
+                    <option value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></option>
+                    <option value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></option>
+                    <option value="4"><img src="./images/7.png" alt="7" /></option>
+                    <option value="5"><img src="./images/Cherry.png" alt="Cherry" /></option>
+                </select>
+
+                <p>Position of reel 2</p>
+                <select id="symbol-reel-position-2">
+                    <option value="top">Top</option>
+                    <option value="center">Center</option>
+                    <option value="bottom">Bottom</option>
+                </select>
+
+                
+                <p>Symbol of reel 3</p>
+
+                <select id="symbol-reel-3">
+                    <option value="1"><img src="./images/BAR.png" alt="BAR" /></option>
+                    <option value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></option>
+                    <option value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></option>
+                    <option value="4"><img src="./images/7.png" alt="7" /></option>
+                    <option value="5"><img src="./images/Cherry.png" alt="Cherry" /></option>
+                </select>
+
+                <p>Position of reel 3</p>
+                <select id="symbol-reel-position-3">
+                    <option value="top">Top</option>
+                    <option value="center">Center</option>
+                    <option value="bottom">Bottom</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
