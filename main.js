@@ -125,6 +125,21 @@ function RollReels() {
         clearTimeout(spinInterval);
         spinInterval = null;
     }
+
+    let reelStopped = 0;
+    for(let x = 0; x < reelCount; x++) {
+        if(spinning[x] <= 0) {
+            reelStopped++;
+        }
+    }
+
+    if(reelStopped >= reelCount) {
+        CheckReelsForWinnings();
+    }
+}
+
+function CheckReelsForWinnings() {
+    console.log("CheckReelsForWinnings");
 }
 
 function ClearAllReelItems() {
