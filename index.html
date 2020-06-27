@@ -6,34 +6,37 @@
 </head>
 <body>
     <div class="container">
-        <div class="balance-container">
-            <input type="text" id="balance" value=5000 />
-        </div>
         <div class="slot-machine-container">
             <div id="reel">
                 <div id="reel-row-1" class="reel-row"></div>
                 <div id="reel-row-2" class="reel-row"></div>
                 <div id="reel-row-3" class="reel-row"></div>
+
                 <div class="reel-row-shadow"></div>
-                <div class="reel-cover-top"></div>
-                <div class="reel-cover-bottom"></div>
-                <div class="top-reel-line reel-line"></div>
-                <div class="bottom-reel-line reel-line"></div>
+                <div class="reel-cover-top reel-cover"></div>
+                <div class="reel-cover-bottom reel-cover"></div>
+
+                <div id="winline-top" class="top-reel-line reel-line"></div>
+                <div id="winline-center" class="center-reel-line reel-line"></div>
+                <div id="winline-bottom" class="bottom-reel-line reel-line"></div>
             </div>
             <input type="button" id="spin-btn" value="SPIN" />
+        </div>
+        <div class="balance-container">
+            <input type="text" id="balance" value=5000 />
         </div>
         <div class="paytable-container">
             <h2>Paytable</h2>
             <table>                    
-                <tr><td><div id="3-cherry-top-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on top line</div></td><td><em>2000</em></td></tr>
-                <tr><td><div id="3-cherry-center-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on center line</div></td><td><em>1000</em></td></tr>
-                <tr><td><div id="3-cherry-bottom-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on bottom line</div></td><td><em>4000</em></td></tr>
-                <tr><td><div id="3-symbols-any-line">3 <img class="thumbnail" src="./images/7.png" alt="7" /> symbols on any line </div></td><td><em>150</em></td></tr>
-                <tr><td><div id="any-combination-of-cherry-or-seven">Any combination of <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> and <img class="thumbnail" src="./images/7.png" alt="7" /> on any line</div></td><td><em>75</em></td></tr>
-                <tr><td><div id="3-3xbar">3 <img class="thumbnail" src="./images/3xBAR.png" alt="3xBAR" /> symbols on any line</div></td><td><em>50</em></td></tr>
-                <tr><td><div id="3-2xbar">3 <img class="thumbnail" src="./images/2xBAR.png" alt="2xBAR" /> symbols on any line</div></td><td><em>20</em></td></tr>
-                <tr><td><div id="3-bar">3 <img class="thumbnail" src="./images/BAR.png" alt="BAR" /> symbols on any line</div></td><td><em>10</em></td></tr>
-                <tr><td><div id="any-bar">Combination of any BAR symbols on any line</div></td><td><em>5</em></td></tr>
+                <tr><td><div id="3-cherry-top-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on top line</div></td><td><em id="paytable-cherries-top">2000</em></td></tr>
+                <tr><td><div id="3-cherry-center-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on center line</div></td><td><em id="paytable-cherries-center">1000</em></td></tr>
+                <tr><td><div id="3-cherry-bottom-line">3 <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> symbols on bottom line</div></td><td><em id="paytable-cherries-bottom">4000</em></td></tr>
+                <tr><td><div id="3-symbols-any-line">3 <img class="thumbnail" src="./images/7.png" alt="7" /> symbols on any line </div></td><td><em id="paytable-seven-any">150</em></td></tr>
+                <tr><td><div id="any-combination-of-cherry-or-seven">Any combination of <img class="thumbnail" src="./images/cherry.png" alt="cherry" /> and <img class="thumbnail" src="./images/7.png" alt="7" /> on any line</div></td><td><em id="paytable-seven-or-cherry-any">75</em></td></tr>
+                <tr><td><div id="3-3xbar">3 <img class="thumbnail" src="./images/3xBAR.png" alt="3xBAR" /> symbols on any line</div></td><td><em id="paytable-threebar-any">50</em></td></tr>
+                <tr><td><div id="3-2xbar">3 <img class="thumbnail" src="./images/2xBAR.png" alt="2xBAR" /> symbols on any line</div></td><td><em id="paytable-twobar-any">20</em></td></tr>
+                <tr><td><div id="3-bar">3 <img class="thumbnail" src="./images/BAR.png" alt="BAR" /> symbols on any line</div></td><td><em id="paytable-bar-any">10</em></td></tr>
+                <tr><td><div id="any-bar">Combination of any BAR symbols on any line</div></td><td><em id="paytable-anybar-any">5</em></td></tr>
             </table>
         </div>
         <div class="debug-area">

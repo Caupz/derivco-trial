@@ -1,17 +1,44 @@
 let activeMode = "random";
 let winlinePositions = ["top", "center", "bottom"];
-let symbols = ["cherry", "7", "BAR", "2xBAR", "3xBAR"];
+let symbols = ["3xBAR", "BAR", "2xBAR", "7", "cherry"];
 let reelRowSymbols = [];
 let reelCount = 3;
+let reelItems = [];
+let spinning = [false, false, false];
+let spinInterval = null;
+
+let balanceElement = document.querySelector("#balance");
 let reelRow = [
     document.querySelector("#reel-row-1"),
     document.querySelector("#reel-row-2"),
     document.querySelector("#reel-row-3")
 ];
-let reelItems = [];
-let spinning = [false, false, false];
+let reelWinningLines = [
+    document.querySelector('#winline-top'),
+    document.querySelector('#winline-center'),
+    document.querySelector('#winline-bottom')
+];
+
 let spinBtn = document.querySelector("#spin-btn");
-let spinInterval = null;
+let paytableCherryTopLine = document.querySelector("#paytable-cherries-top");
+let paytableCherryCenterLine = document.querySelector("#paytable-cherries-center");
+let paytableCherryBottomLine = document.querySelector("#paytable-cherries-bottom");
+let paytableSevenAnyLine = document.querySelector("#paytable-seven-any");
+let paytableSevenOrCherryAnyLine = document.querySelector("#paytable-seven-or-cherry-any");
+let paytableThreeBarAnyLine = document.querySelector("#paytable-threebar-any");
+let paytableTwoBarAnyLine = document.querySelector("#paytable-twobar-any");
+let paytableBarAnyLine = document.querySelector("#paytable-bar-any");
+let paytableAnyBarAnyLine = document.querySelector("#paytable-anybar-any");
+
+let winningPotCherryTopLine = 2000;
+let winningPotCherryCenterLine = 1000;
+let winningPotCherryBottomLine = 4000;
+let winningPotSevenAnyLine = 150;
+let winningPotSevenOrCherryAnyLine = 75;
+let winningPotThreeBarAnyLine = 50;
+let winningPotTwoBarAnyLine = 20;
+let winningPotBarAnyLine = 10;
+let winningPotAnyBarAnyLine = 5;
 
 spinBtn.addEventListener("click", function() {
     if(spinInterval !== null) {
@@ -137,48 +164,172 @@ function RollReels() {
     }
 }
 
+function AddSumToBalance(sum) {
+    balanceElement.value = parseInt(balanceElement.value) + sum;
+}
+
 function CheckReelsForWinnings() {
+    console.log("=====================");
     console.log("CheckReelsForWinnings");
+    console.log("=====================");
 
     if(ThreeCherrysOnTopLine()) {
-        // TODO give sum and blink paytable
+        BlinkPaytableItem(paytableCherryTopLine, winningPotCherryTopLine);
     }
     if(ThreeCherrysOnCenterLine()) {
-        // TODO give sum and blink paytable
+        BlinkPaytableItem(paytableCherryCenterLine, winningPotCherryCenterLine);
     }
     if(ThreeCherrysOnBottomLine()) {
-        // TODO give sum and blink paytable
+        BlinkPaytableItem(paytableCherryBottomLine, winningPotCherryBottomLine);
+    }
+    if(SevensOnAnyLine()) {
+        BlinkPaytableItem(paytableSevenAnyLine, winningPotSevenAnyLine);
+    }
+    if(ThreeXBarsOnAnyLine()) {
+        BlinkPaytableItem(paytableThreeBarAnyLine, winningPotThreeBarAnyLine);
+    }
+    if(TwoXBarsOnAnyLine()) {
+        BlinkPaytableItem(paytableTwoBarAnyLine, winningPotTwoBarAnyLine);
+    }
+    if(BarsOnAnyLine()) {
+        BlinkPaytableItem(paytableBarAnyLine, winningPotBarAnyLine);
+    }
+    if(CherriesOrSevensCombinedOnAnyLine()) {
+        BlinkPaytableItem(paytableSevenOrCherryAnyLine, winningPotSevenOrCherryAnyLine);
+    }
+    if(AnykindOfBarsCombinedOnAnyLine()) {
+        BlinkPaytableItem(paytableAnyBarAnyLine, winningPotAnyBarAnyLine);
     }
 }
 
-function ThreeCherrysOnTopLine() {
-    return CheckThreeCherries(-5, 5);
-}
-function ThreeCherrysOnCenterLine() {
-    return CheckThreeCherries(125, 135);
-}
-function ThreeCherrysOnBottomLine() {
-    return CheckThreeCherries(255, 265);
+function BlinkPaytableItem(paytableElement, winningPot) {
+    console.log("BlinkPaytableItem", paytableElement, winningPot);
+
+    paytableElement.classList.add("blink");
+    AddSumToBalance(winningPot);
+    setTimeout(function() {
+        paytableElement.classList.remove("blink");
+    }, 2000);
 }
 
-function CheckThreeCherries(topMin, topMax) {
-    let cherrysOnLine = 0;
+let TopLineMin = -5, TopLineMax = 5;
+let CenterLineMin = 125, CenterLineMax = 135;
+let BottomLineMin = 255, BottomLineMax = 265;
+
+function ThreeCherrysOnTopLine() {
+    return CheckSymbolsOnLine("top", "cherry");
+}
+function ThreeCherrysOnCenterLine() {
+    return CheckSymbolsOnLine("center", "cherry");
+}
+function ThreeCherrysOnBottomLine() {
+    return CheckSymbolsOnLine("bottom", "cherry");
+}
+
+function SevensOnAnyLine() {
+    return (CheckSymbolsOnLine("top", "7") || 
+            CheckSymbolsOnLine("center", "7") ||
+            CheckSymbolsOnLine("bottom", "7"));
+}
+function ThreeXBarsOnAnyLine() {
+    return (CheckSymbolsOnLine("top", "3xBAR") || 
+            CheckSymbolsOnLine("center", "3xBAR") ||
+            CheckSymbolsOnLine("bottom", "3xBAR"));
+}
+function TwoXBarsOnAnyLine() {
+    return (CheckSymbolsOnLine("top", "2xBAR") || 
+            CheckSymbolsOnLine("center", "2xBAR") ||
+            CheckSymbolsOnLine("bottom", "2xBAR"));
+}
+function BarsOnAnyLine() {
+    return (CheckSymbolsOnLine("top", "BAR") || 
+            CheckSymbolsOnLine("center", "BAR") ||
+            CheckSymbolsOnLine("bottom", "BAR"));
+}
+function CherriesOrSevensCombinedOnAnyLine() {
+    return (CheckSymbolsOnLine("top", ["cherry", "7"]) || 
+            CheckSymbolsOnLine("center", ["cherry", "7"]) ||
+            CheckSymbolsOnLine("bottom", ["cherry", "7"]));
+}
+function AnykindOfBarsCombinedOnAnyLine() {
+    return (CheckSymbolsOnLine("top", ["BAR", "2xBAR", "3xBAR"]) || 
+            CheckSymbolsOnLine("center", ["BAR", "2xBAR", "3xBAR"]) ||
+            CheckSymbolsOnLine("bottom", ["BAR", "2xBAR", "3xBAR"]));
+}
+
+function GetLineMin(line) {
+    switch(line) {
+        case "top": return TopLineMin;
+        case "center": return CenterLineMin;
+        case "bottom": return BottomLineMin;
+    }
+    return 0;
+}
+
+function GetLineMax(line) {
+    switch(line) {
+        case "top": return TopLineMax;
+        case "center": return CenterLineMax;
+        case "bottom": return BottomLineMax;
+    }
+    return 0;
+}
+
+function GetLineIndex(line) {
+    switch(line) {
+        case "top": return 0;
+        case "center": return 1;
+        case "bottom": return 2;
+    }
+    return 0;
+}
+
+function CheckSymbolsOnLine(line, symbolStrs) {
+    let topMin = GetLineMin(line);
+    let topMax = GetLineMax(line);
+    let symbolsOnLine = 0;
     let reelsChecked = [];
+    let symbolIndexes = [];
+
+    if(typeof symbolStrs === 'string' || symbolStrs instanceof String) {
+        symbolIndexes.push(symbols.indexOf(symbolStrs));
+    } else {
+        for(let s = 0, symbol; symbol = symbolStrs[s]; s++) {
+            symbolIndexes.push(symbols.indexOf(symbol));
+        }
+    }
 
     for(let r = 0; r < reelCount; r++) {
         for(let i = 0, reelItem; reelItem = reelItems[r][i]; i++) {
-            if(!reelsChecked.includes(reelItem.dataset.reel) && reelItem.dataset.symbol == 0) {
+            if(!reelsChecked.includes(reelItem.dataset.reel) && symbolIndexes.includes(parseInt(reelItem.dataset.symbol))) {
                 let topValue = parseInt(reelItem.style.top.replace("px", ""));
     
                 if(topValue >= topMin && topValue <= topMax) {
                     reelsChecked.push(reelItem.dataset.reel);
-                    cherrysOnLine++;
+                    symbolsOnLine++;
+
+                    if(symbolsOnLine == reelCount) {
+                        StartBlinkingReel(GetLineIndex(line));
+                        break;
+                    }
                 }
             }
         }
     }
 
-    return (cherrysOnLine == 3);
+    console.log("CheckSymbolsOnLine", symbolStrs, symbolsOnLine, symbolIndexes);
+
+    return (symbolsOnLine == reelCount);
+}
+
+function StartBlinkingReel(line) {
+    if(!reelWinningLines[line].classList.contains("blink")) {
+        reelWinningLines[line].classList.add("blink");
+
+        setTimeout(function() {
+            reelWinningLines[line].classList.remove("blink");
+        }, 2000);
+    }
 }
 
 function ClearAllReelItems() {
