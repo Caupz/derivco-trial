@@ -38,8 +38,7 @@ function RandomlyAssembleReels() {
 
 function RenderStartingReels() {
     for(let r = 0; r < reelCount; r++) {
-        let reelItem = CreateReelElement(reelRowSymbols[r][0], r);
-        reelItem.style.top = "-130px";
+        CreateReelElementOnTop(r);
 
         for(let w = 1; w <= winlinePositions.length; w++) {
             let reelItem = CreateReelElement(reelRowSymbols[r][w], r);
@@ -56,6 +55,7 @@ function CreateReelElement(symbol, reel) {
     ReelImg.src = `./images/${symbols[symbol]}.png`;
 
     ReelItem.setAttribute("data-reel", reel);
+    ReelItem.setAttribute("data-symbol", symbol);
     ReelItem.appendChild(ReelImg);
 
     if(reelItems[reel] === undefined) {
@@ -86,7 +86,6 @@ function GetRandomArbitrary(min, max) {
 }
 
 function RollReels() {
-    console.log("RollReels");
     let removeIndex = [];
     let removedFromReels = [];
 
@@ -140,10 +139,54 @@ function RollReels() {
 
 function CheckReelsForWinnings() {
     console.log("CheckReelsForWinnings");
+
+    if(ThreeCherrysOnTopLine()) {
+        // TODO give sum and blink paytable
+    }
+    if(ThreeCherrysOnCenterLine()) {
+        // TODO give sum and blink paytable
+    }
+    if(ThreeCherrysOnBottomLine()) {
+        // TODO give sum and blink paytable
+    }
+}
+
+function ThreeCherrysOnTopLine() {
+    return CheckThreeCherries(-5, 5);
+}
+function ThreeCherrysOnCenterLine() {
+    return CheckThreeCherries(125, 135);
+}
+function ThreeCherrysOnBottomLine() {
+    return CheckThreeCherries(255, 265);
+}
+
+function CheckThreeCherries(topMin, topMax) {
+    let cherrysOnLine = 0;
+    let reelsChecked = [];
+
+    for(let r = 0; r < reelCount; r++) {
+        for(let i = 0, reelItem; reelItem = reelItems[r][i]; i++) {
+            if(!reelsChecked.includes(reelItem.dataset.reel) && reelItem.dataset.symbol == 0) {
+                let topValue = parseInt(reelItem.style.top.replace("px", ""));
+    
+                if(topValue >= topMin && topValue <= topMax) {
+                    reelsChecked.push(reelItem.dataset.reel);
+                    cherrysOnLine++;
+                }
+            }
+        }
+    }
+
+    return (cherrysOnLine == 3);
 }
 
 function ClearAllReelItems() {
     let rItems = document.querySelectorAll(".reel-item");
+
+    for(let r = 0; r < reelCount; r++) {
+        reelItems[r] = [];
+    }
 
     for(let i = 0, rItem; rItem = rItems[i]; i++) {
         rItem.remove();
