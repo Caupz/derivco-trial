@@ -6,6 +6,7 @@ let reelCount = 3;
 let reelItems = [];
 let spinning = [false, false, false];
 let spinInterval = null;
+let reelStartingPoses = [];
 
 let balanceElement = document.querySelector("#balance");
 let reelRow = [
@@ -40,27 +41,46 @@ let winningPotTwoBarAnyLine = 20;
 let winningPotBarAnyLine = 10;
 let winningPotAnyBarAnyLine = 5;
 
-spinBtn.addEventListener("click", function() {
+spinBtn.addEventListener("click", function() { StartSpinningReels(); });
+
+function StartSpinningReels() {
     if(spinInterval !== null) {
         return;
     }
 
     Init();
+    AddSumToBalance(-1);
     spinning = [206, 258, 309];
     spinInterval = setInterval(function() { RollReels() }, 10);
-});
+    spinBtn.classList.add("disabled");
+    setTimeout(function() { spinBtn.classList.remove("disabled"); }, 3000);
+}
 
 function RandomlyAssembleReels() {
+    reelStartingPoses = [];
+
     for(let r = 0; r < reelCount; r++) {
+        reelStartingPoses[r] = GetRandomSymbol();
+
         for(let w = 0; w <= winlinePositions.length; w++) {
             if(reelRowSymbols[r] === undefined) {
                 reelRowSymbols[r] = [];
             }
-            reelRowSymbols[r].push(GetRandomSymbol());
+            reelRowSymbols[r].push(GetNextSymbolForReel(r));
         }
     }
     
     RenderStartingReels();
+}
+
+function GetNextSymbolForReel(reel) {
+    reelStartingPoses[reel] ++;
+    
+    if(reelStartingPoses[reel] >= symbols.length) {
+        reelStartingPoses[reel] = 0;
+    }
+
+    return reelStartingPoses[reel];
 }
 
 function RenderStartingReels() {
@@ -99,7 +119,7 @@ function GetRandomSymbol() {
 }
 
 function CreateReelElementOnTop(reel) {
-    let reelItem = CreateReelElement(GetRandomSymbol(), reel);
+    let reelItem = CreateReelElement(GetNextSymbolForReel(reel), reel);
     reelItem.style.top = "-130px";
 }
 
