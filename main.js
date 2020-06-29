@@ -1,7 +1,7 @@
 // Game code
 
 let winlinePositions = ["top", "center", "bottom"];
-let symbols = ["3xBAR", "BAR", "2xBAR", "7", "cherry"];
+let symbols = ["3xBAR", "BAR", "2xBAR", "7", "Cherry"];
 let reelRowSymbols = [];
 let reelCount = 3;
 let reelItems = [];
@@ -375,13 +375,13 @@ function BlinkPaytableItem(paytableElement, winningPot) {
 }
 
 function ThreeCherrysOnTopLine() {
-    return CheckSymbolsOnLine("top", "cherry");
+    return CheckSymbolsOnLine("top", "Cherry");
 }
 function ThreeCherrysOnCenterLine() {
-    return CheckSymbolsOnLine("center", "cherry");
+    return CheckSymbolsOnLine("center", "Cherry");
 }
 function ThreeCherrysOnBottomLine() {
-    return CheckSymbolsOnLine("bottom", "cherry");
+    return CheckSymbolsOnLine("bottom", "Cherry");
 }
 
 function SevensOnAnyLine() {
@@ -405,9 +405,9 @@ function BarsOnAnyLine() {
             CheckSymbolsOnLine("bottom", "BAR"));
 }
 function CherriesOrSevensCombinedOnAnyLine() {
-    return (CheckSymbolsOnLine("top", ["cherry", "7"]) || 
-            CheckSymbolsOnLine("center", ["cherry", "7"]) ||
-            CheckSymbolsOnLine("bottom", ["cherry", "7"]));
+    return (CheckSymbolsOnLine("top", ["Cherry", "7"], true) || 
+            CheckSymbolsOnLine("center", ["Cherry", "7"], true) ||
+            CheckSymbolsOnLine("bottom", ["Cherry", "7"], true));
 }
 function AnykindOfBarsCombinedOnAnyLine() {
     return (CheckSymbolsOnLine("top", ["BAR", "2xBAR", "3xBAR"]) || 
@@ -468,31 +468,64 @@ function SymbolIsInSelectedSymbols(symbol, symbols) {
     return (symbols.includes(parseInt(symbol)));
 }
 
-function CheckSymbolsOnLine(line, symbolStrs) {
+function CheckSymbolsOnLine(line, symbolStrs, allRequired) {
     let symbolsOnLine = 0;
     let reelsChecked = [];
     let symbolIndexes = [];
+    let symbolCounts = [];
+    let multiValues = false;
 
     if(typeof symbolStrs === 'string' || symbolStrs instanceof String) {
         symbolIndexes.push(symbols.indexOf(symbolStrs));
     } else {
+        multiValues = true;
+
         for(let s = 0, symbol; symbol = symbolStrs[s]; s++) {
-            symbolIndexes.push(symbols.indexOf(symbol));
+            let indexOfSymbol = symbols.indexOf(symbol);
+            symbolIndexes.push(indexOfSymbol);
+            symbolCounts[indexOfSymbol] = 0;
         }
     }
 
     for(let r = 0; r < reelCount; r++) {
         for(let i = 0, reelItem; reelItem = reelItems[r][i]; i++) {
-            if(IsReelUnChecked(reelsChecked, reelItem.dataset.reel) && SymbolIsInSelectedSymbols(reelItem.dataset.symbol, symbolIndexes)) {
-                if(IsReelItemOnLine(reelItem, line)) {
-                    reelsChecked.push(reelItem.dataset.reel);
-                    symbolsOnLine++;
-
-                    if(symbolsOnLine == reelCount) {
-                        StartBlinkingReel(GetLineIndex(line));
-                        break;
-                    }
+            if(IsReelUnChecked(reelsChecked, reelItem.dataset.reel) && 
+                SymbolIsInSelectedSymbols(reelItem.dataset.symbol, symbolIndexes) &&
+                IsReelItemOnLine(reelItem, line)) 
+            {
+                if(multiValues) {
+                    symbolCounts[parseInt(reelItem.dataset.symbol)]++;
                 }
+
+                reelsChecked.push(reelItem.dataset.reel);
+                symbolsOnLine++;
+
+                if(symbolsOnLine == reelCount) {
+                    StartBlinkingReel(GetLineIndex(line));
+                    break;
+                }
+            }
+        }
+    }
+
+    if(multiValues) {
+        if(allRequired) { // as for example cherrys and 7 both need to exist on line
+            for(let i = 0; i < symbolCounts.length; i++) {
+                if(symbolCounts[i] == 0) {
+                    return false; // Note all symbols got hit.
+                }
+            }
+        } else { // as for example any kind of bar combination
+            let occurences = 0;
+
+            for(let i = 0; i < symbolCounts.length; i++) {
+                if(symbolCounts[i] > 0) {
+                    occurences++;
+                }
+            }
+
+            if(occurences <= 1) { // <= 1 because in this case only 1 symbol was on line, but we seek multiple symbols on 1 line
+                return false;
             }
         }
     }
