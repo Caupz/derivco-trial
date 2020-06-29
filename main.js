@@ -44,29 +44,62 @@ let winningPotAnyBarAnyLine = 5;
 spinBtn.addEventListener("click", function() { StartSpinningReels(); });
 
 function StartSpinningReels() {
-    if(spinInterval !== null) {
+    if(IsSpinning()) {
         return;
     }
 
-    Init();
+    RePositionReelItems();
     AddSumToBalance(-1);
+    StartRollingReels();
+    DisableSpinButtonVisually();
+}
+
+function RePositionReelItems() {
+    for(let reel = 0; reel < reelCount; reel++) {
+        for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
+            if(IsReelItemOnLine(reelItem, "top")) {
+                reelItem.style.top = "0px";
+            } else if(IsReelItemOnLine(reelItem, "center")) {
+                reelItem.style.top = "130px";
+            } else if(IsReelItemOnLine(reelItem, "bottom")) {
+                reelItem.style.top = "260px";
+            }
+        }
+    }
+}
+
+function IsSpinning() {
+    return (spinInterval !== null);
+}
+
+function StartRollingReels() {
     spinning = [206, 258, 309];
     spinInterval = setInterval(function() { RollReels() }, 10);
+}
+
+function DisableSpinButtonVisually() {
     spinBtn.classList.add("disabled");
     setTimeout(function() { spinBtn.classList.remove("disabled"); }, 3000);
 }
 
 function RandomlyAssembleReels() {
-    reelStartingPoses = [];
+    reelStartingSymbols = [];
+    reelLinePositions = [];
 
     for(let r = 0; r < reelCount; r++) {
-        reelStartingPoses[r] = GetRandomSymbol();
+        reelStartingSymbols[r] = GetRandomSymbol();
+        reelLinePositions[r] = GetRandomArbitrary(0,2);
 
         for(let w = 0; w <= winlinePositions.length; w++) {
             if(reelRowSymbols[r] === undefined) {
                 reelRowSymbols[r] = [];
             }
-            reelRowSymbols[r].push(GetNextSymbolForReel(r));
+
+            if(reelLinePositions[r] == w || reelLinePositions[r]+2 == w) {
+                reelRowSymbols[r].push(GetNextSymbolForReel(r));
+            } else {
+                reelRowSymbols[r].push(-1);
+            }
         }
     }
     
@@ -74,13 +107,13 @@ function RandomlyAssembleReels() {
 }
 
 function GetNextSymbolForReel(reel) {
-    reelStartingPoses[reel] ++;
+    reelStartingSymbols[reel] ++;
     
-    if(reelStartingPoses[reel] >= symbols.length) {
-        reelStartingPoses[reel] = 0;
+    if(reelStartingSymbols[reel] >= symbols.length) {
+        reelStartingSymbols[reel] = 0;
     }
 
-    return reelStartingPoses[reel];
+    return reelStartingSymbols[reel];
 }
 
 function RenderStartingReels() {
@@ -88,9 +121,21 @@ function RenderStartingReels() {
         CreateReelElementOnTop(r);
 
         for(let w = 1; w <= winlinePositions.length; w++) {
+            if(reelRowSymbols[r][w] == -1) {
+               continue; 
+            }
+
             let reelItem = CreateReelElement(reelRowSymbols[r][w], r);
             reelItem.style.top = (w-1)*130+"px";
         }
+    }
+
+    ClearReelLinePositions();
+}
+
+function ClearReelLinePositions() {
+    for(let i = 0; i < reelCount; i++) {
+        reelLinePositions[reel] = 0;
     }
 }
 
@@ -120,7 +165,28 @@ function GetRandomSymbol() {
 
 function CreateReelElementOnTop(reel) {
     let reelItem = CreateReelElement(GetNextSymbolForReel(reel), reel);
-    reelItem.style.top = "-130px";
+
+    if(reelLinePositions[reel] == 1) {
+        reelItem.style.top = "-260px";
+    } else {
+        reelItem.style.top = "-130px";
+    }
+}
+
+function CreateReelElementOnReel(reel, topValue) {
+    let reelItem = CreateReelElement(GetNextSymbolForReel(reel), reel);
+    reelItem.style.top = topValue+"px";
+}
+
+function IsReelItemOnLine(reelItem, line) {
+    let topMin = GetLineMin(line);
+    let topMax = GetLineMax(line);
+    let topValue = parseInt(reelItem.style.top.replace("px", ""));
+
+    if(topValue >= topMin && topValue <= topMax) {
+        return true;
+    }
+    return false;
 }
 
 function Init() {
@@ -138,17 +204,15 @@ function RollReels() {
 
     for(let reel = 0; reel < reelCount; reel++) {
         for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
-            if(reelItem.parentNode == null) {
-                continue;
-            }
-    
             if(spinning[reelItem.dataset.reel]) {
                 let topValue = parseInt(reelItem.style.top.replace("px", "")) + 5;
     
-                if(topValue >= 385) {
+                if(topValue == 260) {
+                    CreateReelElementOnReel(reelItem.dataset.reel, -260);
+                } else if(topValue == 385) {
+                    reelItem.style.display = "none";
                     removeIndex.push(i);
                     removedFromReels.push(reelItem.dataset.reel);
-                    reelItem.style.display = "none";
                     reelItem.parentNode.removeChild(reelItem);
                     continue;
                 }
@@ -164,7 +228,6 @@ function RollReels() {
 
     for(let j = 0; j < removeIndex.length; j++) {
         reelItems[removedFromReels[j]].splice(removeIndex[j], 1);
-        CreateReelElementOnTop(removedFromReels[j]);
     }
     
     if(!spinning[reelCount-1]) {
