@@ -7,6 +7,10 @@ let reelItems = [];
 let spinning = [false, false, false];
 let spinInterval = null;
 let reelStartingPoses = [];
+let rollingSpeed = 5;
+let TopLineMin = -5, TopLineMax = 5;
+let CenterLineMin = 125, CenterLineMax = 135;
+let BottomLineMin = 255, BottomLineMax = 265;
 
 let balanceElement = document.querySelector("#balance");
 let reelRow = [
@@ -72,8 +76,18 @@ function IsSpinning() {
     return (spinInterval !== null);
 }
 
+function GetRollingTime(initialTime) {
+    let rollingTimes = [-26, 0, 26]; // 26 is the value of 130px which is 1 symbol height / rollingSpeed which is 5
+    let rollingTime = GetRandomArbitrary(0, rollingTimes.length);
+    return initialTime + rollingTimes[rollingTime];
+}
+
 function StartRollingReels() {
-    spinning = [206, 258, 309];
+    spinning = [
+        GetRollingTime(206), 
+        GetRollingTime(258), 
+        GetRollingTime(309)
+    ];
     spinInterval = setInterval(function() { RollReels() }, 10);
 }
 
@@ -210,7 +224,7 @@ function RollReels() {
     for(let reel = 0; reel < reelCount; reel++) {
         for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
             if(spinning[reelItem.dataset.reel]) {
-                let topValue = parseInt(reelItem.style.top.replace("px", "")) + 5;
+                let topValue = parseInt(reelItem.style.top.replace("px", "")) + rollingSpeed;
     
                 if(topValue == 260) {
                     reelItem.setAttribute("data-created", 1);
@@ -303,10 +317,6 @@ function BlinkPaytableItem(paytableElement, winningPot) {
         paytableElement.classList.remove("blink");
     }, 2000);
 }
-
-let TopLineMin = -5, TopLineMax = 5;
-let CenterLineMin = 125, CenterLineMax = 135;
-let BottomLineMin = 255, BottomLineMax = 265;
 
 function ThreeCherrysOnTopLine() {
     return CheckSymbolsOnLine("top", "cherry");
