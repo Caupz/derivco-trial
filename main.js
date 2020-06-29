@@ -9,9 +9,13 @@ let spinning = [false, false, false];
 let spinInterval = null;
 let reelStartingPoses = [];
 let rollingSpeed = 5;
-let TopLineMin = -10, TopLineMax = 10;
-let CenterLineMin = 120, CenterLineMax = 140;
-let BottomLineMin = 250, BottomLineMax = 270;
+let TopLineMin = -5, TopLineMax = 5;
+let CenterLineMin = 125, CenterLineMax = 135;
+let BottomLineMin = 255, BottomLineMax = 265;
+
+let RePosTopLineMin = -15, RePosTopLineMax = 15;
+let RePosCenterLineMin = 115, RePosCenterLineMax = 145;
+let RePosBottomLineMin = 245, RePosBottomLineMax = 275;
 
 let balanceElement = document.querySelector("#balance");
 let reelRow = [
@@ -48,8 +52,20 @@ let winningPotAnyBarAnyLine = 5;
 
 spinBtn.addEventListener("click", function() { StartSpinningReels(); });
 
+balanceElement.addEventListener("input", () => {
+    if(parseInt(balanceElement.value) < 1) {
+        balanceElement.value = 1;
+    } else if(parseInt(balanceElement.value) > 5000) {
+        balanceElement.value = 5000;
+    }
+});
+
 function StartSpinningReels() {
     if(IsSpinning()) {
+        return;
+    }
+    if(IsNotEnoughMoneyToSpin()) {
+        alert("You do not have enough money to spin!");
         return;
     }
 
@@ -59,16 +75,24 @@ function StartSpinningReels() {
     DisableSpinButtonVisually();
 }
 
+function IsNotEnoughMoneyToSpin() {
+    return (parseInt(balanceElement.value) < 1);
+}
+
 function RePositionReelItems() {
     for(let reel = 0; reel < reelCount; reel++) {
-        for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
-            if(IsReelItemOnLine(reelItem, "top")) {
-                reelItem.style.top = "0px";
-            } else if(IsReelItemOnLine(reelItem, "center")) {
-                reelItem.style.top = "130px";
-            } else if(IsReelItemOnLine(reelItem, "bottom")) {
-                reelItem.style.top = "260px";
-            }
+        RePositionSpecificReelItems(reel);
+    }
+}
+
+function RePositionSpecificReelItems(reel) {
+    for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
+        if(IsReelItemOnLineRange(reelItem, "top")) {
+            reelItem.style.top = "0px";
+        } else if(IsReelItemOnLineRange(reelItem, "center")) {
+            reelItem.style.top = "130px";
+        } else if(IsReelItemOnLineRange(reelItem, "bottom")) {
+            reelItem.style.top = "260px";
         }
     }
 }
@@ -94,7 +118,6 @@ function StartRollingReels() {
 
 function DisableSpinButtonVisually() {
     spinBtn.classList.add("disabled");
-    setTimeout(function() { spinBtn.classList.remove("disabled"); }, 3000);
 }
 
 function RandomlyAssembleReels() {
@@ -209,6 +232,17 @@ function IsReelItemOnLine(reelItem, line) {
     return false;
 }
 
+function IsReelItemOnLineRange(reelItem, line) {
+    let topMin = GetLineRangeMin(line);
+    let topMax = GetLineRangeMax(line);
+    let topValue = parseInt(reelItem.style.top.replace("px", ""));
+
+    if(topValue >= topMin && topValue <= topMax) {
+        return true;
+    }
+    return false;
+}
+
 function Init() {
     AddEventListenersToModeSelection();
     AddEventListenersToDebugSymbolSelectTags();
@@ -257,6 +291,10 @@ function RollReels() {
                     AddSpinningTimeToAllReelsNotFixed(reel); // Keep spinning until correct symbol is in position
                 }
             }
+
+            if(spinning[reel] == 0) {
+                RePositionSpecificReelItems(reel);
+            }
         }
     }
 
@@ -292,7 +330,13 @@ function AddSumToBalance(sum) {
     balanceElement.value = parseInt(balanceElement.value) + sum;
 }
 
+function EnableSpinButton() {
+    spinBtn.classList.remove("disabled");
+}
+
 function CheckReelsForWinnings() {
+    EnableSpinButton();
+
     if(ThreeCherrysOnTopLine()) {
         BlinkPaytableItem(paytableCherryTopLine, winningPotCherryTopLine);
     }
@@ -385,6 +429,24 @@ function GetLineMax(line) {
         case "top": return TopLineMax;
         case "center": return CenterLineMax;
         case "bottom": return BottomLineMax;
+    }
+    return 0;
+}
+
+function GetLineRangeMin(line) {
+    switch(line) {
+        case "top": return RePosTopLineMin;
+        case "center": return RePosCenterLineMin;
+        case "bottom": return RePosBottomLineMin;
+    }
+    return 0;
+}
+
+function GetLineRangeMax(line) {
+    switch(line) {
+        case "top": return RePosTopLineMax;
+        case "center": return RePosCenterLineMax;
+        case "bottom": return RePosBottomLineMax;
     }
     return 0;
 }
