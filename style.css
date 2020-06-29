@@ -217,3 +217,25 @@ em.blink {
     text-align: center;
     width: 99%;
 }
+
+@media only screen and (max-width: 1024px)  {
+    .container {
+        width: 100%;
+    }
+
+    #spin-btn {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .paytable-container select, .debug-area select {
+        font-size: 1.2em;
+    }
+    .paytable-container, .debug-area {
+        width: 100%;
+        font-size: 1.5em;
+    }
+}
