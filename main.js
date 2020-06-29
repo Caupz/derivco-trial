@@ -30,6 +30,7 @@ let reelWinningLines = [
 ];
 
 let spinBtn = document.querySelector("#spin-btn");
+let lastAudio = null;
 let paytableCherryTopLine = document.querySelector("#paytable-cherries-top");
 let paytableCherryCenterLine = document.querySelector("#paytable-cherries-center");
 let paytableCherryBottomLine = document.querySelector("#paytable-cherries-bottom");
@@ -69,6 +70,8 @@ function StartSpinningReels() {
         return;
     }
 
+    PlaySound("spin.mp3");
+    PlaySound("reels.mp3");
     RePositionReelItems();
     AddSumToBalance(-1);
     StartRollingReels();
@@ -335,6 +338,7 @@ function EnableSpinButton() {
 }
 
 function CheckReelsForWinnings() {
+    StopLastAudio();
     EnableSpinButton();
 
     if(ThreeCherrysOnTopLine()) {
@@ -367,6 +371,7 @@ function CheckReelsForWinnings() {
 }
 
 function BlinkPaytableItem(paytableElement, winningPot) {
+    PlaySound("coins.mp3");
     paytableElement.classList.add("blink");
     AddSumToBalance(winningPot);
     setTimeout(function() {
@@ -553,6 +558,16 @@ function ClearAllReelItems() {
     for(let i = 0, rItem; rItem = rItems[i]; i++) {
         rItem.remove();
     }
+}
+
+function PlaySound(soundFileName) {
+    lastAudio = new Audio('./sounds/' + soundFileName);
+    lastAudio.play();
+}
+
+function StopLastAudio() {
+    lastAudio.pause();
+    lastAudio.currentTime = 0;
 }
 
 // Debug area
