@@ -127,6 +127,10 @@ function RenderStartingReels() {
 
             let reelItem = CreateReelElement(reelRowSymbols[r][w], r);
             reelItem.style.top = (w-1)*130+"px";
+
+            if(w == winlinePositions.length) {
+                reelItem.setAttribute("data-created", 1); // Because we create CreateReelElementOnTop above
+            }
         }
     }
 
@@ -148,6 +152,7 @@ function CreateReelElement(symbol, reel) {
 
     ReelItem.setAttribute("data-reel", reel);
     ReelItem.setAttribute("data-symbol", symbol);
+    ReelItem.setAttribute("data-created", 0);
     ReelItem.appendChild(ReelImg);
 
     if(reelItems[reel] === undefined) {
@@ -208,7 +213,11 @@ function RollReels() {
                 let topValue = parseInt(reelItem.style.top.replace("px", "")) + 5;
     
                 if(topValue == 260) {
+                    reelItem.setAttribute("data-created", 1);
                     CreateReelElementOnReel(reelItem.dataset.reel, -260);
+                } else if(topValue == 265 && reelItem.dataset.created == 0) { // Sometimes when spinning stopped and re-spinned then above condition statement didn't fire. This is failover.
+                    reelItem.setAttribute("data-created", 1);
+                    CreateReelElementOnReel(reelItem.dataset.reel, -255);
                 } else if(topValue == 385) {
                     reelItem.style.display = "none";
                     removeIndex.push(i);
