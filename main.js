@@ -1,3 +1,12 @@
+/* Author's notes:
+
+I know a lot of things could've done differently like the overall logic, design & mobile 
+view is not the greatest, but unfortunately, I did not have more time to make it more 
+polished. In mid-way into this sample work, I figured I should've written it in object-oriented 
+approach or even in React. At first glance, it did not look that much to write but by 
+then it was too late to re-write it.
+                                    - Caupo Helvik */
+
 // Game code
 
 let winlinePositions = ["top", "center", "bottom"];
