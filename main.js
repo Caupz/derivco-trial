@@ -9,9 +9,9 @@ let spinning = [false, false, false];
 let spinInterval = null;
 let reelStartingPoses = [];
 let rollingSpeed = 5;
-let TopLineMin = -5, TopLineMax = 5;
-let CenterLineMin = 125, CenterLineMax = 135;
-let BottomLineMin = 255, BottomLineMax = 265;
+let TopLineMin = -10, TopLineMax = 10;
+let CenterLineMin = 120, CenterLineMax = 140;
+let BottomLineMin = 250, BottomLineMax = 270;
 
 let balanceElement = document.querySelector("#balance");
 let reelRow = [
@@ -254,7 +254,7 @@ function RollReels() {
 
             if(activeMode == "fixed" && spinning[reel] == 0) {
                 if(!CheckSymbolOnReelAndLine(reel, reelActivePositions[reel], reelActiveSymbols[reel])) {
-                    spinning[reel]++; // Keep spinning until correct symbol is in position
+                    AddSpinningTimeToAllReelsNotFixed(reel); // Keep spinning until correct symbol is in position
                 }
             }
         }
@@ -277,7 +277,14 @@ function RollReels() {
     }
 
     if(reelStopped >= reelCount) {
+        RePositionReelItems();
         CheckReelsForWinnings();
+    }
+}
+
+function AddSpinningTimeToAllReelsNotFixed(reel) {
+    for(let i = reel; i < spinning.length; i++) {
+        spinning[i]++;
     }
 }
 
@@ -391,9 +398,15 @@ function GetLineIndex(line) {
     return 0;
 }
 
+function IsReelUnChecked(reelsChecked, reel) {
+    return (!reelsChecked.includes(reel));
+}
+
+function SymbolIsInSelectedSymbols(symbol, symbols) {
+    return (symbols.includes(parseInt(symbol)));
+}
+
 function CheckSymbolsOnLine(line, symbolStrs) {
-    let topMin = GetLineMin(line);
-    let topMax = GetLineMax(line);
     let symbolsOnLine = 0;
     let reelsChecked = [];
     let symbolIndexes = [];
@@ -408,10 +421,8 @@ function CheckSymbolsOnLine(line, symbolStrs) {
 
     for(let r = 0; r < reelCount; r++) {
         for(let i = 0, reelItem; reelItem = reelItems[r][i]; i++) {
-            if(!reelsChecked.includes(reelItem.dataset.reel) && symbolIndexes.includes(parseInt(reelItem.dataset.symbol))) {
-                let topValue = parseInt(reelItem.style.top.replace("px", ""));
-    
-                if(topValue >= topMin && topValue <= topMax) {
+            if(IsReelUnChecked(reelsChecked, reelItem.dataset.reel) && SymbolIsInSelectedSymbols(reelItem.dataset.symbol, symbolIndexes)) {
+                if(IsReelItemOnLine(reelItem, line)) {
                     reelsChecked.push(reelItem.dataset.reel);
                     symbolsOnLine++;
 
@@ -501,16 +512,9 @@ function AddEventListenersToDebugPositionSelectTags() {
 }
 
 function CheckSymbolOnReelAndLine(reel, line, symbolIndex) {
-    let topMin = GetLineMin(line);
-    let topMax = GetLineMax(line);
-
     for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
-        if(symbolIndex == parseInt(reelItem.dataset.symbol)) {
-            let topValue = parseInt(reelItem.style.top.replace("px", ""));
-
-            if(topValue >= topMin && topValue <= topMax) {
-                return true;
-            }
+        if(symbolIndex == parseInt(reelItem.dataset.symbol) && IsReelItemOnLine(reelItem, line)) {
+            return true;
         }
     }
 
