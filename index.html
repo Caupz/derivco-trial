@@ -43,25 +43,25 @@
             <h2>Debug area</h2>
             <div class="modes">
                 <p>Modes:</p>
-                <input type="radio" id="random" name="mode" value="1">
+                <input type="radio" id="random" name="mode" value="random" checked />
                 <label for="random">Random</label><br>
-                <input type="radio" id="fixed" name="mode" value="0">
+                <input type="radio" id="fixed" name="mode" value="fixed" />
                 <label for="fixed">Fixed</label><br>
             </div>
 
             <div class="fixed-mode-config-container">
                 <div class="reel-config">
-                    <input data-reel="1" class="dropdown" type="button" value="Symbol of reel 1 ▼" />
-                    <div class="select" id="symbol-reel-3">
-                        <div class="option" value="1"><img src="./images/BAR.png" alt="BAR" /></div>
-                        <div class="option" value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></div>
-                        <div class="option" value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></div>
-                        <div class="option" value="4"><img src="./images/7.png" alt="7" /></div>
-                        <div class="option" value="5"><img src="./images/Cherry.png" alt="Cherry" /></div>
-                    </div>
+                    <label>Symbol of reel 1</label>
+                    <select id="symbol-reel-1">
+                        <option class="option" value="0">3xBAR</option>
+                        <option class="option" value="1">BAR</option>
+                        <option class="option" value="2">2xBAR</option>
+                        <option class="option" value="3">7</option>
+                        <option class="option" value="4">Cherry</option>
+                    </select>
 
-                    <p>Position of reel 1</p>
-                    <select id="symbol-reel-position-1">
+                    <label>Position of reel 1</label>
+                    <select id="symbol-reel-1-position">
                         <option value="top">Top</option>
                         <option value="center">Center</option>
                         <option value="bottom">Bottom</option>
@@ -69,17 +69,17 @@
                 </div>
                 
                 <div class="reel-config">
-                    <input data-reel="2" class="dropdown" type="button" value="Symbol of reel 2 ▼" />
-                    <div class="select" id="symbol-reel-3">
-                        <div class="option" value="1"><img src="./images/BAR.png" alt="BAR" /></div>
-                        <div class="option" value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></div>
-                        <div class="option" value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></div>
-                        <div class="option" value="4"><img src="./images/7.png" alt="7" /></div>
-                        <div class="option" value="5"><img src="./images/Cherry.png" alt="Cherry" /></div>
-                    </div>
+                    <label>Symbol of reel 2</label>
+                    <select id="symbol-reel-2">
+                        <option class="option" value="0">3xBAR</option>
+                        <option class="option" value="1">BAR</option>
+                        <option class="option" value="2">2xBAR</option>
+                        <option class="option" value="3">7</option>
+                        <option class="option" value="4">Cherry</option>
+                    </select>
 
-                    <p>Position of reel 2</p>
-                    <select id="symbol-reel-position-2">
+                    <label>Position of reel 2</label>
+                    <select id="symbol-reel-2-position">
                         <option value="top">Top</option>
                         <option value="center">Center</option>
                         <option value="bottom">Bottom</option>
@@ -87,17 +87,17 @@
                 </div>
                 
                 <div class="reel-config">
-                    <input data-reel="3" class="dropdown" type="button" value="Symbol of reel 3 ▼" />
-                    <div class="select" id="symbol-reel-3">
-                        <div class="option" value="1"><img src="./images/BAR.png" alt="BAR" /></div>
-                        <div class="option" value="2"><img src="./images/2xBAR.png" alt="2xBAR" /></div>
-                        <div class="option" value="3"><img src="./images/3xBAR.png" alt="3xBAR" /></div>
-                        <div class="option" value="4"><img src="./images/7.png" alt="7" /></div>
-                        <div class="option" value="5"><img src="./images/Cherry.png" alt="Cherry" /></div>
-                    </div>
+                    <label>Symbol of reel 3</label>
+                    <select id="symbol-reel-3">
+                        <option class="option" value="0">3xBAR</option>
+                        <option class="option" value="1">BAR</option>
+                        <option class="option" value="2">2xBAR</option>
+                        <option class="option" value="3">7</option>
+                        <option class="option" value="4">Cherry</option>
+                    </select>
 
-                    <p>Position of reel 3</p>
-                    <select id="symbol-reel-position-3">
+                    <label>Position of reel 3</label>
+                    <select id="symbol-reel-3-position">
                         <option value="top">Top</option>
                         <option value="center">Center</option>
                         <option value="bottom">Bottom</option>

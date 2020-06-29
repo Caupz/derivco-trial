@@ -1,4 +1,5 @@
-let activeMode = "random";
+// Game code
+
 let winlinePositions = ["top", "center", "bottom"];
 let symbols = ["3xBAR", "BAR", "2xBAR", "7", "cherry"];
 let reelRowSymbols = [];
@@ -209,6 +210,10 @@ function IsReelItemOnLine(reelItem, line) {
 }
 
 function Init() {
+    AddEventListenersToModeSelection();
+    AddEventListenersToDebugSymbolSelectTags();
+    AddEventListenersToDebugPositionSelectTags();
+    InitDebugValues();
     ClearAllReelItems();
     RandomlyAssembleReels();
 }
@@ -246,6 +251,12 @@ function RollReels() {
         
         if(spinning[reel] > 0) {
             spinning[reel]--;
+
+            if(activeMode == "fixed" && spinning[reel] == 0) {
+                if(!CheckSymbolOnReelAndLine(reel, reelActivePositions[reel], reelActiveSymbols[reel])) {
+                    spinning[reel]++; // Keep spinning until correct symbol is in position
+                }
+            }
         }
     }
 
@@ -275,10 +286,6 @@ function AddSumToBalance(sum) {
 }
 
 function CheckReelsForWinnings() {
-    console.log("=====================");
-    console.log("CheckReelsForWinnings");
-    console.log("=====================");
-
     if(ThreeCherrysOnTopLine()) {
         BlinkPaytableItem(paytableCherryTopLine, winningPotCherryTopLine);
     }
@@ -309,8 +316,6 @@ function CheckReelsForWinnings() {
 }
 
 function BlinkPaytableItem(paytableElement, winningPot) {
-    console.log("BlinkPaytableItem", paytableElement, winningPot);
-
     paytableElement.classList.add("blink");
     AddSumToBalance(winningPot);
     setTimeout(function() {
@@ -419,8 +424,6 @@ function CheckSymbolsOnLine(line, symbolStrs) {
         }
     }
 
-    console.log("CheckSymbolsOnLine", symbolStrs, symbolsOnLine, symbolIndexes);
-
     return (symbolsOnLine == reelCount);
 }
 
@@ -444,6 +447,74 @@ function ClearAllReelItems() {
     for(let i = 0, rItem; rItem = rItems[i]; i++) {
         rItem.remove();
     }
+}
+
+// Debug area
+
+let activeMode = document.querySelector('[name=mode]:checked').value;
+let modeRadiobuttonRandom = document.querySelector("#random");
+let modeRadiobuttonFixed = document.querySelector("#fixed");
+
+let debugSymbolReels = [
+    document.querySelector("#symbol-reel-1"),
+    document.querySelector("#symbol-reel-2"),
+    document.querySelector("#symbol-reel-3")
+];
+
+let debugSymbolReelPositions = [
+    document.querySelector("#symbol-reel-1-position"),
+    document.querySelector("#symbol-reel-2-position"),
+    document.querySelector("#symbol-reel-3-position")
+];
+
+let reelActiveSymbols = []; // index 0 = reel 1, index 1 = reel 2... value is array symbols index
+let reelActivePositions = []; // index 0 = reel 1 position, index 1 = reel 2 position
+
+function InitDebugValues() {
+    for(let i = 0; i < debugSymbolReels.length; i++) {
+        reelActiveSymbols.push(parseInt(debugSymbolReels[i].value));
+    }
+    for(let i = 0; i < debugSymbolReelPositions.length; i++) {
+        reelActivePositions.push(debugSymbolReelPositions[i].value);
+    }
+}
+
+function AddEventListenersToModeSelection() {
+    modeRadiobuttonRandom.addEventListener("click", () => { activeMode = modeRadiobuttonRandom.value; });
+    modeRadiobuttonFixed.addEventListener("click", () => { activeMode = modeRadiobuttonFixed.value; });
+}
+
+function AddEventListenersToDebugSymbolSelectTags() {
+    for(let i = 0, symbolSelect; symbolSelect = debugSymbolReels[i]; i++) {
+        symbolSelect.addEventListener("change", () => {
+            reelActiveSymbols[i] = parseInt(symbolSelect.value);
+        });
+    }
+}
+
+function AddEventListenersToDebugPositionSelectTags() {
+    for(let i = 0, positionSelect; positionSelect = debugSymbolReelPositions[i]; i++) {
+        positionSelect.addEventListener("change", () => {
+            reelActivePositions[i] = positionSelect.value;
+        });
+    }
+}
+
+function CheckSymbolOnReelAndLine(reel, line, symbolIndex) {
+    let topMin = GetLineMin(line);
+    let topMax = GetLineMax(line);
+
+    for(let i = 0, reelItem; reelItem = reelItems[reel][i]; i++) {
+        if(symbolIndex == parseInt(reelItem.dataset.symbol)) {
+            let topValue = parseInt(reelItem.style.top.replace("px", ""));
+
+            if(topValue >= topMin && topValue <= topMax) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 Init();
